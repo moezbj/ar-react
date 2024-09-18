@@ -56,7 +56,7 @@ const XrHitModel = () => {
 
 export default XrHitModel;
  */
-/* import { OrbitControls, useTexture } from "@react-three/drei";
+import { OrbitControls, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Interactive, useHitTest, useXR } from "@react-three/xr";
 import { useRef, useState } from "react";
@@ -69,7 +69,7 @@ const XrHitModel = () => {
   const { isPresenting } = useXR();
 
   // Load the image texture for the hit marker
-  const hitMarkerTexture = useTexture("/path/to/your/image.png");
+  const hitMarkerTexture = useTexture("/models/hand2.png");
 
   useThree(({ camera }) => {
     if (!isPresenting) {
@@ -114,8 +114,8 @@ const XrHitModel = () => {
   );
 };
 
-export default XrHitModel; */
-import { OrbitControls, useTexture } from "@react-three/drei";
+export default XrHitModel;
+/* import { OrbitControls, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Interactive, useHitTest, useXR } from "@react-three/xr";
 import { useRef, useState } from "react";
@@ -162,7 +162,6 @@ const XrHitModel = () => {
       {isPresenting && (
         <Interactive onSelect={placeModel}>
           <mesh ref={reticleRef}>
-            {/* Replace ring geometry with a plane and apply the image texture */}
             <planeGeometry args={[0.7, 0.7]} />
             <meshBasicMaterial map={hitMarkerTexture} transparent />
           </mesh>
@@ -174,4 +173,4 @@ const XrHitModel = () => {
   );
 };
 
-export default XrHitModel;
+export default XrHitModel; */
