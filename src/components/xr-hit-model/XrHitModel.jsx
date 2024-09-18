@@ -1,4 +1,4 @@
-import { OrbitControls } from "@react-three/drei";
+/* import { OrbitControls } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Interactive, useHitTest, useXR } from "@react-three/xr";
 import { useRef, useState } from "react";
@@ -54,9 +54,9 @@ const XrHitModel = () => {
   );
 };
 
-export default XrHitModel;
+export default XrHitModel; */
 
-/* import { OrbitControls, useTexture } from "@react-three/drei";
+/*import { OrbitControls, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Interactive, useHitTest, useXR } from "@react-three/xr";
 import { useRef, useState } from "react";
@@ -115,7 +115,8 @@ const XrHitModel = () => {
 };
 
 export default XrHitModel; */
-/* import { OrbitControls, useTexture } from "@react-three/drei";
+
+import { OrbitControls, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Interactive, useHitTest, useXR } from "@react-three/xr";
 import { useRef, useState } from "react";
@@ -128,7 +129,7 @@ const XrHitModel = () => {
   const { isPresenting } = useXR();
 
   // Load the image texture for the hit marker
-  const hitMarkerTexture = useTexture("/path/to/your/image.png");
+  const hitMarkerTexture = useTexture("/models/hand.png");
 
   useThree(({ camera }) => {
     if (!isPresenting) {
@@ -173,4 +174,4 @@ const XrHitModel = () => {
   );
 };
 
-export default XrHitModel; */
+export default XrHitModel;
