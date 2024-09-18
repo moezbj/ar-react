@@ -1,4 +1,4 @@
-/* import { OrbitControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Interactive, useHitTest, useXR } from "@react-three/xr";
 import { useRef, useState } from "react";
@@ -55,8 +55,8 @@ const XrHitModel = () => {
 };
 
 export default XrHitModel;
- */
-import { OrbitControls, useTexture } from "@react-three/drei";
+
+/* import { OrbitControls, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Interactive, useHitTest, useXR } from "@react-three/xr";
 import { useRef, useState } from "react";
@@ -114,7 +114,7 @@ const XrHitModel = () => {
   );
 };
 
-export default XrHitModel;
+export default XrHitModel; */
 /* import { OrbitControls, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Interactive, useHitTest, useXR } from "@react-three/xr";
