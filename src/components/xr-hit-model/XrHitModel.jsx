@@ -69,7 +69,7 @@ const XrHitModel = () => {
   const { isPresenting } = useXR();
 
   // Load the image texture for the hit marker
-  const hitMarkerTexture = useTexture("/public/models/hand2.png");
+  const hitMarkerTexture = useTexture("/models/hand2.png");
 
   useThree(({ camera }) => {
     if (!isPresenting) {
