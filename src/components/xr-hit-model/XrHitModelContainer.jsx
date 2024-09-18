@@ -10,11 +10,21 @@ const XrHitModelContainer = () => {
           requiredFeatures: ["hit-test"],
         }}
       />
-      <Canvas>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          color: "white",
+        }}
+      >
+        <h1 style={{ marginTop: 100 }}>Welcome to Ar tracking</h1>
+      </div>
+      {/* <Canvas>
         <XR>
           <XrHitModel />
         </XR>
-      </Canvas>
+      </Canvas> */}
     </>
   );
 };
