@@ -12,7 +12,7 @@ const XrHitModel = () => {
   const { isPresenting } = useXR();
 
   // Load the image texture for the hit marker
-  const hitMarkerTexture = useTexture("/public/models/hand2.png");
+  const hitMarkerTexture = useTexture("/models/hand2.png.png");
 
   // Distance from the camera where the marker should stay
   const distanceFromCamera = 1;
