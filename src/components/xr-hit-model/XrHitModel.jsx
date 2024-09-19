@@ -78,7 +78,7 @@ const XrHitModel = () => {
   });
   const direction = new THREE.Vector3(); // Create it once
 
-  useFrame(() => {
+  /*   useFrame(() => {
     if (isPresenting && reticleRef.current) {
       direction.set(0, 0, -1).applyQuaternion(camera.quaternion);
       reticleRef.current.position.copy(
@@ -88,6 +88,9 @@ const XrHitModel = () => {
       );
       reticleRef.current.lookAt(camera.position);
     }
+  }); */
+  useFrame((state, delta) => {
+    state.camera.lookAt(ref.current.position);
   });
 
   const placeModel = (e) => {
