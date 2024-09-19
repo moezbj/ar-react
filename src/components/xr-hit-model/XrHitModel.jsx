@@ -58,16 +58,27 @@ const XrHitModel = () => {
 
 export default XrHitModel;*/
 import { Canvas, useFrame } from "@react-three/fiber";
-import { XR, ARButton } from "@react-three/xr";
+import { XR, ARButton, Interactive } from "@react-three/xr";
 import { useRef } from "react";
 import * as THREE from "three";
 import { useTexture } from "@react-three/drei";
 
-
 const CenteredPlane = () => {
   const planeRef = useRef();
   const distanceFromCamera = 1; // The distance from the camera where the plane should stay
-  const texture = useTexture("/models/hand2.png"); // Load your image as a texture
+  const [currentImage, setCurrentImage] = useState("/models/hand2.png");
+
+  const texture1 = useTexture("/models/hand2.png"); // Load your image as a texture
+  const texture2 = useTexture("/models/henna.png"); // Load your image as a texture
+
+  const handleClick = () => {
+    // Toggle between the two images on click
+    setCurrentImage((prevImage) =>
+      prevImage === "/models/hand2.png"
+        ? "/models/hand2.png"
+        : "/models/hand2.png"
+    );
+  };
 
   useFrame(({ camera }) => {
     if (planeRef.current) {
@@ -89,11 +100,16 @@ const CenteredPlane = () => {
   });
 
   return (
-    <mesh ref={planeRef}>
-      {/* Simple plane geometry */}
-      <planeGeometry args={[0.5, 0.5]} />
-      <meshBasicMaterial map={texture} transparent={true} />
-    </mesh>
+    <Interactive onSelect={handleClick}>
+      <mesh ref={planeRef}>
+        {/* Simple plane geometry */}
+        <planeGeometry args={[0.5, 0.5]} />
+        <meshBasicMaterial
+          map={currentImage === "/models/hand2.png" ? texture1 : texture2}
+          transparent={true}
+        />
+      </mesh>
+    </Interactive>
   );
 };
 export default CenteredPlane;
