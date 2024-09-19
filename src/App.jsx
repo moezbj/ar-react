@@ -8,7 +8,7 @@ import XrHitModelContainer from "./components/xr-hit-model/XrHitModelContainer";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<XrHitModelContainer />} />
+      <Route path="/" element={<XrHitCubeContainer />} />
       <Route path="/cube" element={<CubeContainer />} />
       <Route path="/xr-cube" element={<XrCubeContainer />} />
       <Route path="/xr-hit-cube" element={<XrHitCubeContainer />} />
