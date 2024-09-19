@@ -1,8 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-import * as handPoseDetection from '@tensorflow-models/hand-pose-detection';
-import { loadGraphModel } from '@tensorflow/tfjs';
-
-const handDetectionModelUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection@0.0.3/hand_pose_detection_model.json'; // Update with your model URL
+import { useEffect, useRef, useState } from "react";
+import * as handPoseDetection from "@tensorflow-models/hand-pose-detection";
+import { loadGraphModel } from "@tensorflow/tfjs";
 
 const HandTracking = ({ onHandDetected }) => {
   const [model, setModel] = useState(null);
@@ -10,8 +8,13 @@ const HandTracking = ({ onHandDetected }) => {
 
   useEffect(() => {
     const loadModel = async () => {
-      const model = await loadGraphModel(handDetectionModelUrl);
-      setModel(model);
+      const detector = await handPoseDetection.createDetector(
+        handPoseDetection.SupportedModels.MediaPipeHands,
+        {
+          runtime: "tfjs", // Use TensorFlow.js runtime
+        }
+      );
+      setModel(detector);
     };
     loadModel();
   }, []);
