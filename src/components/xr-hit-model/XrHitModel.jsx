@@ -61,7 +61,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { XR, ARButton } from "@react-three/xr";
 import { useRef } from "react";
 import * as THREE from "three";
-const texture = useTexture("/models/hand2.png"); // Load your image as a texture
+const texture = useTexture("/public/models/hand2.png"); // Load your image as a texture
 
 const CenteredPlane = () => {
   const planeRef = useRef();
