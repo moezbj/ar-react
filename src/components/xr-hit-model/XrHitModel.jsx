@@ -75,26 +75,21 @@ const CenteredPlane = () => {
   const handleClick = () => {
     setCurrentImage((prevImage) =>
       prevImage === "/models/hand2.png"
-        ? "/models/hand2.png"
+        ? "/models/henna.png"
         : "/models/hand2.png"
     );
   };
 
   useFrame(({ camera }) => {
     if (planeRef.current) {
-      // Get the forward direction of the camera
       const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(
         camera.quaternion
       );
-
-      // Position the plane in front of the camera
       planeRef.current.position.copy(
         camera.position
           .clone()
           .add(direction.multiplyScalar(distanceFromCamera))
       );
-
-      // Ensure the plane always faces the camera
       planeRef.current.lookAt(camera.position);
     }
   });
@@ -102,7 +97,6 @@ const CenteredPlane = () => {
   return (
     <Interactive onSelect={handleClick}>
       <mesh ref={planeRef}>
-        {/* Simple plane geometry */}
         <planeGeometry args={[0.5, 0.5]} />
         <meshBasicMaterial
           map={currentImage === "/models/hand2.png" ? texture1 : texture2}
