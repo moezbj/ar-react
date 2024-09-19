@@ -4,7 +4,7 @@ import { Interactive, useHitTest, useXR } from "@react-three/xr";
 import { useRef, useState } from "react";
 import Model from "./Model";
 
-const XrHitModel = () => {
+/*const XrHitModel = () => {
   const reticleRef = useRef();
   const [models, setModels] = useState([]);
 
@@ -17,13 +17,13 @@ const XrHitModel = () => {
   });
 
   useHitTest((hitMatrix, hit) => {
-    /* hitMatrix.decompose(
+     hitMatrix.decompose(
       reticleRef.current.position,
       reticleRef.current.quaternion,
       reticleRef.current.scale
     );
 
-    reticleRef.current.rotation.set(-Math.PI / 2, 0, 0); */
+    reticleRef.current.rotation.set(-Math.PI / 2, 0, 0); 
     reticleRef.current.position.clone().add(offset);
     reticleRef.current.rotation.copy(camera.rotation);
   });
@@ -56,4 +56,40 @@ const XrHitModel = () => {
   );
 };
 
-export default XrHitModel;
+export default XrHitModel;*/
+import { Canvas, useFrame } from "@react-three/fiber";
+import { XR, ARButton } from "@react-three/xr";
+import { useRef } from "react";
+import * as THREE from "three";
+
+const CenteredPlane = () => {
+  const planeRef = useRef();
+  const distanceFromCamera = 1; // The distance from the camera where the plane should stay
+
+  useFrame(({ camera }) => {
+    if (planeRef.current) {
+      // Get the forward direction of the camera
+      const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(
+        camera.quaternion
+      );
+
+      // Position the plane in front of the camera
+      planeRef.current.position.copy(
+        camera.position
+          .clone()
+          .add(direction.multiplyScalar(distanceFromCamera))
+      );
+
+      // Ensure the plane always faces the camera
+      planeRef.current.lookAt(camera.position);
+    }
+  });
+
+  return (
+    <mesh ref={planeRef}>
+      {/* Simple plane geometry */}
+      <planeGeometry args={[0.5, 0.5]} />
+      <meshBasicMaterial color="blue" />
+    </mesh>
+  );
+};
