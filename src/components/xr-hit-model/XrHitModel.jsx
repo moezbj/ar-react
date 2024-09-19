@@ -76,22 +76,16 @@ const XrHitModel = () => {
       camera.position.z = 3;
     }
   });
+  const direction = new THREE.Vector3(); // Create it once
 
   useFrame(() => {
     if (isPresenting && reticleRef.current) {
-      // Get the camera's forward direction
-      const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(
-        camera.quaternion
-      );
-
-      // Set the marker's position in front of the camera
+      direction.set(0, 0, -1).applyQuaternion(camera.quaternion);
       reticleRef.current.position.copy(
         camera.position
           .clone()
           .add(direction.multiplyScalar(distanceFromCamera))
       );
-
-      // Make the marker face the camera
       reticleRef.current.lookAt(camera.position);
     }
   });
