@@ -66,6 +66,8 @@ const CenteredPlane = () => {
   const planeRef = useRef();
   const distanceFromCamera = 1; // The distance from the camera where the plane should stay
   const { isPresenting } = useXR();
+  const hitMarkerTexture = useTexture("/models/hand2.png");
+  const [models, setModels] = useState([]);
 
   useFrame(({ camera }) => {
     if (planeRef.current) {
