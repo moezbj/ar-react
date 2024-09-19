@@ -61,6 +61,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { XR, ARButton } from "@react-three/xr";
 import { useRef } from "react";
 import * as THREE from "three";
+const texture = useTexture("/models/hand2.png"); // Load your image as a texture
 
 const CenteredPlane = () => {
   const planeRef = useRef();
@@ -89,7 +90,7 @@ const CenteredPlane = () => {
     <mesh ref={planeRef}>
       {/* Simple plane geometry */}
       <planeGeometry args={[0.5, 0.5]} />
-      <meshBasicMaterial color="blue" />
+      <meshBasicMaterial map={texture} transparent={true} />
     </mesh>
   );
 };
