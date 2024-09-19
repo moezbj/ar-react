@@ -1,10 +1,10 @@
-import { OrbitControls } from "@react-three/drei";
+/* import { OrbitControls } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Interactive, useHitTest, useXR } from "@react-three/xr";
 import { useRef, useState } from "react";
-import Model from "./Model";
+import Model from "./Model"; 
 
-/*const XrHitModel = () => {
+const XrHitModel = () => {
   const reticleRef = useRef();
   const [models, setModels] = useState([]);
 
@@ -93,3 +93,4 @@ const CenteredPlane = () => {
     </mesh>
   );
 };
+export default CenteredPlane;
