@@ -138,7 +138,7 @@ const XrHitModel = () => {
   const distanceFromCamera = 1;
 
   // Update the marker position relative to the camera's forward direction on every frame
-  useFrame(() => {
+  /*  useFrame(() => {
     if (isPresenting && reticleRef.current) {
       // Get the camera's forward direction
       const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(
@@ -155,7 +155,18 @@ const XrHitModel = () => {
       // Make the marker face the camera
       reticleRef.current.lookAt(camera.position);
     }
-  });
+  }); */
+  let n = new THREE.Vector3(); // normal - for re-use
+  let cpp = new THREE.Vector3(); //coplanar point - for re-use
+  let plane = new THREE.Plane();
+
+  let objPos = object.position;
+  let camPos = camera.position;
+
+  // somewhere in animation loop or anywhere else further
+  n.subVectors(camPos, objPos).normalize();
+  cpp.copy(objPos);
+  plane.setFromNormalAndCoplanarPoint(n, cpp);
 
   const placeModel = () => {
     let position = reticleRef.current.position.clone(); // Use the reticle's current position
@@ -174,7 +185,6 @@ const XrHitModel = () => {
       {isPresenting && (
         <Interactive onSelect={placeModel}>
           <mesh ref={reticleRef}>
-            {/* Replace ring geometry with a plane and apply the image texture */}
             <planeGeometry args={[0.3, 0.3]} />
             <meshBasicMaterial map={hitMarkerTexture} transparent />
           </mesh>
