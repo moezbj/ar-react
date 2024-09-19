@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import * as handPoseDetection from "@tensorflow-models/hand-pose-detection";
-import { loadGraphModel } from "@tensorflow/tfjs";
+import * as tf from '@tensorflow/tfjs';
+import { useEffect, useRef, useState } from 'react';
+import * as handPoseDetection from '@tensorflow-models/hand-pose-detection';
 
 const HandTracking = ({ onHandDetected }) => {
   const [model, setModel] = useState(null);
@@ -8,12 +8,9 @@ const HandTracking = ({ onHandDetected }) => {
 
   useEffect(() => {
     const loadModel = async () => {
-      const detector = await handPoseDetection.createDetector(
-        handPoseDetection.SupportedModels.MediaPipeHands,
-        {
-          runtime: "tfjs", // Use TensorFlow.js runtime
-        }
-      );
+      const detector = await handPoseDetection.createDetector(handPoseDetection.SupportedModels.MediaPipeHands, {
+        runtime: 'tfjs', // Use TensorFlow.js runtime
+      });
       setModel(detector);
     };
     loadModel();
@@ -26,10 +23,8 @@ const HandTracking = ({ onHandDetected }) => {
     const detectHands = async () => {
       const predictions = await model.estimateHands(video);
       if (predictions.length > 0) {
-        // Hand detected
         onHandDetected(predictions);
       } else {
-        // No hand detected
         onHandDetected([]);
       }
       requestAnimationFrame(detectHands);
