@@ -116,38 +116,49 @@ const XrHitModel = () => {
 
 export default XrHitModel; */
 
+import { Canvas } from "@react-three/fiber";
+import { XR, ARButton, useXR } from "@react-three/xr";
 import { OrbitControls, useTexture } from "@react-three/drei";
-import { useThree } from "@react-three/fiber";
-import { Interactive, useHitTest, useXR } from "@react-three/xr";
+import { useThree, useFrame } from "@react-three/fiber";
+import { Interactive } from "@react-three/xr";
 import { useRef, useState } from "react";
 import * as THREE from "three";
-import Model from "./Model";
+import Model from "./Model"; // Assuming you have a Model component
 
 const XrHitModel = () => {
   const reticleRef = useRef();
   const [models, setModels] = useState([]);
+  const { camera } = useThree();
   const { isPresenting } = useXR();
 
   // Load the image texture for the hit marker
   const hitMarkerTexture = useTexture("/models/hand.png");
 
-  useThree(({ camera }) => {
-    if (!isPresenting) {
-      camera.position.z = 1;
+  // Distance from the camera where the marker should stay
+  const distanceFromCamera = 1;
+
+  // Update the marker position relative to the camera's forward direction on every frame
+  useFrame(() => {
+    if (isPresenting && reticleRef.current) {
+      // Get the camera's forward direction
+      const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(
+        camera.quaternion
+      );
+
+      // Set the marker's position in front of the camera
+      reticleRef.current.position.copy(
+        camera.position
+          .clone()
+          .add(direction.multiplyScalar(distanceFromCamera))
+      );
+
+      // Make the marker face the camera
+      reticleRef.current.lookAt(camera.position);
     }
   });
 
-  useHitTest((hitMatrix, hit) => {
-    hitMatrix.decompose(
-      reticleRef.current.position,
-      reticleRef.current.quaternion,
-      reticleRef.current.scale
-    );
-    reticleRef.current.rotation.set(-Math.PI / 2, 0, 0);
-  });
-
-  const placeModel = (e) => {
-    let position = e.intersection.object.position.clone();
+  const placeModel = () => {
+    let position = reticleRef.current.position.clone(); // Use the reticle's current position
     let id = Date.now();
     setModels((prevModels) => [...prevModels, { position, id }]);
   };
@@ -163,7 +174,8 @@ const XrHitModel = () => {
       {isPresenting && (
         <Interactive onSelect={placeModel}>
           <mesh ref={reticleRef}>
-            <planeGeometry args={[0.7, 0.7]} />
+            {/* Replace ring geometry with a plane and apply the image texture */}
+            <planeGeometry args={[0.3, 0.3]} />
             <meshBasicMaterial map={hitMarkerTexture} transparent />
           </mesh>
         </Interactive>
@@ -173,5 +185,4 @@ const XrHitModel = () => {
     </>
   );
 };
-
 export default XrHitModel;
