@@ -65,9 +65,6 @@ import * as THREE from "three";
 const CenteredPlane = () => {
   const planeRef = useRef();
   const distanceFromCamera = 1; // The distance from the camera where the plane should stay
-  const { isPresenting } = useXR();
-  const hitMarkerTexture = useTexture("/models/hand2.png");
-  const [models, setModels] = useState([]);
 
   useFrame(({ camera }) => {
     if (planeRef.current) {
@@ -87,30 +84,13 @@ const CenteredPlane = () => {
       planeRef.current.lookAt(camera.position);
     }
   });
-  const placeModel = (e) => {
-    let position = e.intersection.object.position.clone();
-    let id = Date.now();
-    setModels([{ position, id }]);
-  };
-  return (
-    <>
-      <OrbitControls />
-      <ambientLight />
-      {isPresenting &&
-        models.map(({ position, id }) => {
-          return <Model key={id} position={position} />;
-        })}
-      {isPresenting && (
-        <Interactive onSelect={placeModel}>
-          <mesh ref={reticleRef} rotation-x={-Math.PI / 2}>
-            <ringGeometry args={[0.1, 0.25, 32]} />
-            <meshStandardMaterial color={"white"} />
-          </mesh>
-        </Interactive>
-      )}
 
-      {!isPresenting && <Model />}
-    </>
+  return (
+    <mesh ref={planeRef}>
+      {/* Simple plane geometry */}
+      <planeGeometry args={[0.5, 0.5]} />
+      <meshBasicMaterial color="blue" />
+    </mesh>
   );
 };
 export default CenteredPlane;
