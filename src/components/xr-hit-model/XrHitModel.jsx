@@ -76,21 +76,22 @@ const XrHitModel = () => {
       camera.position.z = 3;
     }
   });
-  const direction = new THREE.Vector3(); // Create it once
 
-  /*   useFrame(() => {
-    if (isPresenting && reticleRef.current) {
-      direction.set(0, 0, -1).applyQuaternion(camera.quaternion);
-      reticleRef.current.position.copy(
-        camera.position
-          .clone()
-          .add(direction.multiplyScalar(distanceFromCamera))
-      );
-      reticleRef.current.lookAt(camera.position);
-    }
-  }); */
-  useFrame((state, delta) => {
-    state.camera.lookAt(ref.current.position);
+  useHitTest((hitMatrix, hit) => {
+    /*     hitMatrix.decompose(
+      reticleRef.current.position,
+      reticleRef.current.quaternion,
+      reticleRef.current.scale
+    );
+    reticleRef.current.rotation.set(-Math.PI / 2, 0, 0); */
+    const direction = new THREE.Vector3(); // Create it once
+
+    direction.set(0, 0, -1).applyQuaternion(camera.quaternion);
+    reticleRef.current.position.copy(
+      camera.position.clone().add(direction.multiplyScalar(distanceFromCamera))
+    );
+
+    reticleRef.current.lookAt(camera.position);
   });
 
   const placeModel = (e) => {
