@@ -17,13 +17,9 @@ const XrHitModel = () => {
   });
 
   useHitTest((hitMatrix, hit) => {
-    hitMatrix.decompose(
-      reticleRef.current.position,
-      reticleRef.current.quaternion,
-      reticleRef.current.scale
-    );
+    hitMatrix.decompose(reticleRef.current.position.clone().add(offset));
 
-    reticleRef.current.rotation.set(-Math.PI / 2, 0, 0);
+    reticleRef.current.rotation.copy(camera.rotation);
   });
 
   const placeModel = (e) => {
