@@ -3,25 +3,25 @@ import { Interactive } from "@react-three/xr";
 import { useRef, useState } from "react";
 import * as THREE from "three";
 import { useTexture } from "@react-three/drei";
-import HandTracking from "./handTrack"; // Import your hand tracking component
+//import HandTracking from "./handTrack"; // Import your hand tracking component
 
 const CenteredPlane = () => {
   const planeRef = useRef();
   const distanceFromCamera = 1;
   const [currentImage, setCurrentImage] = useState("/models/hand2.png");
-  const [handDetected, setHandDetected] = useState(false);
+  // const [handDetected, setHandDetected] = useState(false);
 
   const texture1 = useTexture("/models/hand2.png");
   const texture2 = useTexture("/models/henna.png");
 
   const handleClick = () => {
-    if (handDetected) {
+   /*  if (handDetected) { */
       setCurrentImage((prevImage) =>
         prevImage === "/models/hand2.png"
           ? "/models/henna.png"
           : "/models/hand2.png"
       );
-    }
+   /*  } */
   };
 
   useFrame(({ camera }) => {
@@ -49,8 +49,8 @@ const CenteredPlane = () => {
           />
         </mesh>
       </Interactive>
-      <HandTracking onHandDetected={setHandDetected} />
-    </>
+{/*       <HandTracking onHandDetected={setHandDetected} />
+ */}    </>
   );
 };
 export default CenteredPlane;
