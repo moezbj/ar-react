@@ -56,11 +56,11 @@ const XrHitModel = () => {
 
 export default XrHitModel; */
 
-/*import { OrbitControls, useTexture } from "@react-three/drei";
+import { OrbitControls, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Interactive, useHitTest, useXR } from "@react-three/xr";
 import { useRef, useState } from "react";
-import * as THREE from 'three';
+import * as THREE from "three";
 import Model from "./Model";
 
 const XrHitModel = () => {
@@ -77,13 +77,23 @@ const XrHitModel = () => {
     }
   });
 
-  useHitTest((hitMatrix, hit) => {
-    hitMatrix.decompose(
-      reticleRef.current.position,
-      reticleRef.current.quaternion,
-      reticleRef.current.scale
-    );
-    reticleRef.current.rotation.set(-Math.PI / 2, 0, 0);
+  useFrame(() => {
+    if (isPresenting && reticleRef.current) {
+      // Get the camera's forward direction
+      const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(
+        camera.quaternion
+      );
+
+      // Set the marker's position in front of the camera
+      reticleRef.current.position.copy(
+        camera.position
+          .clone()
+          .add(direction.multiplyScalar(distanceFromCamera))
+      );
+
+      // Make the marker face the camera
+      reticleRef.current.lookAt(camera.position);
+    }
   });
 
   const placeModel = (e) => {
@@ -114,9 +124,9 @@ const XrHitModel = () => {
   );
 };
 
-export default XrHitModel; */
+export default XrHitModel;
 
-import { Canvas } from "@react-three/fiber";
+/* import { Canvas } from "@react-three/fiber";
 import { XR, ARButton, useXR } from "@react-three/xr";
 import { OrbitControls, useTexture } from "@react-three/drei";
 import { useThree, useFrame } from "@react-three/fiber";
@@ -138,7 +148,7 @@ const XrHitModel = () => {
   const distanceFromCamera = 1;
 
   // Update the marker position relative to the camera's forward direction on every frame
-  /*  useFrame(() => {
+   useFrame(() => {
     if (isPresenting && reticleRef.current) {
       // Get the camera's forward direction
       const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(
@@ -155,7 +165,7 @@ const XrHitModel = () => {
       // Make the marker face the camera
       reticleRef.current.lookAt(camera.position);
     }
-  }); */
+  });
   let n = new THREE.Vector3(); // normal - for re-use
   let cpp = new THREE.Vector3(); //coplanar point - for re-use
   let plane = new THREE.Plane();
@@ -195,4 +205,4 @@ const XrHitModel = () => {
     </>
   );
 };
-export default XrHitModel;
+export default XrHitModel; */
