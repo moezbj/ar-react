@@ -63,11 +63,11 @@ import { useRef } from "react";
 import * as THREE from "three";
 import { useTexture } from "@react-three/drei";
 
-const texture = useTexture("/public/models/hand2.png"); // Load your image as a texture
 
 const CenteredPlane = () => {
   const planeRef = useRef();
   const distanceFromCamera = 1; // The distance from the camera where the plane should stay
+  const texture = useTexture("/public/models/hand2.png"); // Load your image as a texture
 
   useFrame(({ camera }) => {
     if (planeRef.current) {
