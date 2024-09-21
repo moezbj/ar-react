@@ -1,7 +1,5 @@
 <html>
 
-</html>
-
 <head>
     <meta charset="UTF-8">
     <title>Handpose with tfjs</title>
@@ -17,19 +15,68 @@
             padding: 0;
         }
 
+        body {
+            width: 100vw;
+            height: 100vh;
+        }
+
         #overlayCanvas {
             position: absolute;
             top: 0;
             left: 0;
             pointer-events: none;
+            z-index: 0;
+        }
+
+        #overlayCanvasHand {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: rgba(100, 91, 91, 0.3);
+            z-index: 999;
+            width: 420px;
+            height: 420px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #btn {
+            border-radius: 5px;
+            background-color: black;
+            color: white;
+            border: none;
+            z-index: 999;
+            padding: 10px 15px 10px 15px;
+            margin-top: 25px;
+            cursor: pointer;
+        }
+
+        #btn:hover {
+            background-color: white;
+            color: black;
+        }
+
+        #text {
+            color: rgba(255, 255, 255, 1);
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: larger;
+            font-weight: 700;
         }
     </style>
 </head>
 
 <body>
-    <canvas id="canvas" width=360 height=360></canvas>
-    <video id="video" width=360 height=360 autoplay style="display:none"></video>
-    <canvas id="overlayCanvas" width=360 height=360></canvas>
+    <canvas id="canvas" width=420 height=420></canvas>
+    <video id="video" width=420 height=420 autoplay playsinline style="display:none"></video>
+    <canvas id="overlayCanvas" width=420 height=420></canvas>
+    <div id="overlayCanvasHand" width=420 height=420>
+        <img src="./models/hand.png" width="180" height="180" />
+        <p id="text">Place your hand here</p>
+        <button id="btn">Start</button>
+    </div>
 
     <script>
         let video = document.getElementById("video");
@@ -37,37 +84,32 @@
         let overlayCanvas = document.getElementById("overlayCanvas");
         let ctx = canvas.getContext("2d");
         let overlayCtx = overlayCanvas.getContext("2d");
+        let overlayCanvas2 = document.getElementById("overlayCanvasHand");
+
+        let loading = true;
         let hands;
         let detector;
+        let useFront = false;
+        // Load image
         let image = new Image();
         image.src = "./models/henna.png";
         image.onload = () => {
             console.log("Image loaded successfully");
         };
 
-        let showKeyPoints = true;
-        let useFront = false;
-
-        /*  function startVideo() {
-             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                 let mode = useFront ? "user" : "environment";
-                 navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 360, height: 360, facingMode: mode } }).then(function (stream) {
-                     video.addEventListener("loadedmetadata", loadModel);
-                     video.srcObject = stream;
-                     video.play();
-                     drawCameraIntoCanvas();
-                 }).catch(err => {
-                     console.error("Error accessing media devices.", err);
-                 });
-             }
-         } */
+        // Add event listeners
+        document.getElementById("btn").addEventListener("click", onclickButton);
+        console.log('loading', loading);
+        // Start video streaming
         function startVideo() {
+            console.log('here....1', loading);
+
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 let constraints = {
                     audio: false,
                     video: {
-                        width: { ideal: 360 },
-                        height: { ideal: 360 },
+                        width: { ideal: 640, max: 640 },
+                        height: { ideal: 480, max: 480 },
                         facingMode: useFront ? "user" : "environment"
                     }
                 };
@@ -83,6 +125,20 @@
             }
         }
 
+        // Draw camera stream to canvas
+        function drawCameraIntoCanvas() {
+            ctx.clearRect(0, 0, 420, 420);
+            if (useFront) {
+                ctx.save();
+                ctx.scale(-1, 1);
+                ctx.translate(-420, 0);
+            }
+            ctx.drawImage(video, 0, 0, 420, 420);
+            if (useFront) ctx.restore();
+            setTimeout(drawCameraIntoCanvas, 30);  // Limit to ~33fps
+        }
+
+        // Load hand pose model
         async function loadModel() {
             const model = handPoseDetection.SupportedModels.MediaPipeHands;
             const detectorConfig = {
@@ -91,49 +147,43 @@
                 solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/hands"
             };
             detector = await handPoseDetection.createDetector(model, detectorConfig);
-            estimateHands();
+            console.log('here....2', loading);
+
+
         }
 
+        // Estimate hands
         async function estimateHands() {
-            const estimationConfig = { flipHorizontal: useFront };
-            const rawHands = await detector.estimateHands(video, estimationConfig);
-            hands = getKeypoints(rawHands);
-            drawHandOverlay();
-            window.requestAnimationFrame(estimateHands);
-        }
 
-        function drawCameraIntoCanvas() {
-            ctx.clearRect(0, 0, 360, 360);  // Clear the canvas each frame
-            if (useFront) {
-                ctx.clearRect(0, 0, 360, 360);
-                ctx.save();
-                ctx.scale(-1, 1);
-                ctx.translate(-360, 0);
-                ctx.drawImage(video, 0, 0, 360, 360);
-                ctx.restore();
-            } else {
-                ctx.drawImage(video, 0, 0, 360, 360);
+            try {
+                const estimationConfig = { flipHorizontal: useFront };
+                const rawHands = await detector.estimateHands(video, estimationConfig);
+                hands = getKeypoints(rawHands);
+                console.log('here....3', loading);
+
+                drawHandOverlay();
+            } catch (error) {
+                console.error("Error estimating hands:", error);
             }
-            window.requestAnimationFrame(drawCameraIntoCanvas);
+            window.requestAnimationFrame(estimateHands);  // Call next frame
         }
 
+        // Draw hand overlay on canvas
         function drawHandOverlay() {
             overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
             if (hands.length > 0) {
                 let hand = hands[0];
                 let palmCenter = hand.keypoints[9];
-                console.log('palmCenter', palmCenter)
                 if (palmCenter) {
-                    let imgWidth = 180;
-                    let imgHeight = 180;
-                    let centerX = (overlayCanvas.width / 2) - (imgWidth / 2);
-                    let centerY = (overlayCanvas.height / 2) - (imgHeight / 2);
-                    overlayCtx.drawImage(image, palmCenter[0] / 1000, palmCenter[1] / 1000, imgWidth, imgHeight);
+                    let imgWidth = 200;
+                    let imgHeight = 200;
+                    console.log("hahahaha", loading);
+                    overlayCtx.drawImage(image, palmCenter[0] / 2000, palmCenter[1] / 800, imgWidth, imgHeight);
                 }
             }
-
         }
 
+        // Extract keypoints from hand data
         function getKeypoints(hands) {
             let keypoints = [];
             for (let i = 0; i < hands.length; i += 1) {
@@ -150,8 +200,19 @@
             return keypoints;
         }
 
-        startVideo();  // Start video only after switching backend
+        // Button click handler
+        function onclickButton(e) {
+            e.preventDefault();  // Prevent any default behavior
+            e.stopPropagation();  // Prevent any default behavior
+            console.log("Button clicked");
+            loading = false;
+            overlayCanvas2.style.display = "none";  // Hide the overlayCanvasHand
+            estimateHands();
 
+        }
+
+        // Start video when the page loads
+        startVideo();
     </script>
 </body>
 
