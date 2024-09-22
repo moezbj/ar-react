@@ -220,6 +220,7 @@
 
             if (hands.length > 0) {
                 let hand = hands[0];
+                console.log('hand', hand)
                 let indexStartFinger = hand.keypoints[8];
                 let middleStartFinger = hand.keypoints[12]
                 let ringStartFinger = hand.keypoints[16]
@@ -234,11 +235,14 @@
                     let fingerWidth = 35
                     let fingerHeight = 50
                     overlayCtx.drawImage(image, palmStartCenter[0] / 1000, palmStartCenter[1] / 1000, imgWidth, imgHeight);
-                    overlayCtx.drawImage(imageFinger, indexStartFinger[0] / 750, indexStartFinger[1] / 540, fingerWidth, fingerHeight);
-                    overlayCtx.drawImage(imageFinger, middleStartFinger[0] / 800, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
-                    overlayCtx.drawImage(imageFinger, ringStartFinger[0] / 800, ringStartFinger[1] / 540, fingerWidth, fingerHeight);
-/*                     drawCircle(indexStartFinger[0] / 800, indexStartFinger[0] / 540, 50, 'red');
- */
+                    /*   overlayCtx.drawImage(imageFinger, indexStartFinger[0] / 900, indexStartFinger[1] / 540, fingerWidth, fingerHeight);
+                      overlayCtx.drawImage(imageFinger, middleStartFinger[0] / 900, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
+                      overlayCtx.drawImage(imageFinger, ringStartFinger[0] / 900, ringStartFinger[1] / 540, fingerWidth, fingerHeight); */
+                    overlayCtx.drawImage(imageFinger, indexStartFinger[0] / 900, indexStartFinger[1] / 540, fingerWidth, fingerHeight);
+                    overlayCtx.drawImage(imageFinger, middleStartFinger[0] / 900, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
+                    overlayCtx.drawImage(imageFinger, ringStartFinger[0] / 900, ringStartFinger[1] / 540, fingerWidth, fingerHeight);
+                    /*                     drawCircle(indexStartFinger[0] / 800, indexStartFinger[0] / 540, 50, 'red');
+                     */
 
                 }
             }
