@@ -96,7 +96,7 @@
         let hands;
         let detector;
         let showKeyPoints = true;
-        let useFront = true;
+        let useFront = false;
         let image = new Image();
         image.src = "./models/henna.png";
         image.onload = () => {
@@ -164,24 +164,26 @@
                     let imgWidth = 200;
                     let imgHeight = 200;
                     if (hand.handedness === "Left") {
-                        overlayCtx.drawImage(image, palmStartCenter[0], palmStartCenter[1], imgWidth, imgHeight);
+                        overlayCtx.drawImage(image, palmStartCenter[0], palmStartCenter[1] / 100, imgWidth, imgHeight);
                     }
                     else {
-                        overlayCtx.drawImage(image2, palmStartCenter[0], palmStartCenter[1], imgWidth, imgHeight);
+                        overlayCtx.drawImage(image2, palmStartCenter[0], palmStartCenter[1] / 100, imgWidth, imgHeight);
                     }
                 }
             }
         }
         function drawCameraIntoCanvas() {
-            ctx.clearRect(0, 0, 360, 360);
             if (useFront) {
+                ctx.clearRect(0, 0, 360, 360);
                 ctx.save();
                 ctx.scale(-1, 1);
                 ctx.translate(-360, 0);
+                ctx.drawImage(video, 0, 0, 360, 360);
+                ctx.restore();
+            } else {
+                ctx.drawImage(video, 0, 0, 360, 360);
             }
-            ctx.drawImage(video, 0, 0, 360, 360);
-            if (useFront) ctx.restore();
-            setTimeout(drawCameraIntoCanvas, 30);  // Limit to ~33fps
+            window.requestAnimationFrame(drawCameraIntoCanvas);
         }
 
         function drawKeypoints() {
@@ -194,10 +196,10 @@
                         ctx.arc(keypoint[0], keypoint[1], 14, 0, 2 * Math.PI);
                         ctx.fill();
                     }
-                  /*   if (j === 9) {
-                        console.log('hrer')
-                        drawHandOverlay()
-                    } */
+                    /*   if (j === 9) {
+                          console.log('hrer')
+                          drawHandOverlay()
+                      } */
 
 
                 }
