@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Handpose with tfjs</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0, user-scalable=no">
-
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection"></script>
@@ -100,10 +98,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 0px 20px 20px 20px;
+            margin: 0px 0px 20px 20px;
         }
     </style>
-
 </head>
 
 <body>
@@ -112,17 +109,42 @@
         <h1 id="title">Ar Simulation </h1>
     </header>
     <canvas id="canvas" width=420 height=420></canvas>
-    <video id="video" width=420 height=420 autoplay style="display:none"></video>
+    <video id="video" width=420 height=420 autoplay playsinline style="display:none"></video>
+    <canvas id="overlayCanvas" width=420 height=420></canvas>
     <div id="overlayLoading" width=420 height=420>
         <img src="./models/hand.png" width="180" height="180" />
         <p id="text">Place your hand here</p>
         <button id="btn">Start</button>
     </div>
 
+    <canvas id="finger1" width=25 height=25></canvas>
+    <canvas id="finger2" width=25 height=25></canvas>
+    <canvas id="finger3" width=25 height=25></canvas>
+
+
     <script>
+        // video
         let video = document.getElementById("video");
         let canvas = document.getElementById("canvas");
         let ctx = canvas.getContext("2d");
+        // hand to show
+        let overlayCanvas = document.getElementById("overlayCanvas");
+        let overlayCtx = overlayCanvas.getContext("2d");
+        // loading overlay
+        let overlayLoading = document.getElementById("overlayLoading");
+        // fingers overlay
+        let overlayFinger1 = document.getElementById("finger1");
+        let overlayFinger1Ctx = overlayFinger1.getContext("2d");
+
+        let overlayFinger2 = document.getElementById("finger2");
+        let overlayFinger2Ctx = overlayFinger2.getContext("2d");
+
+        let overlayFinger3 = document.getElementById("finger3");
+        let overlayFinger3Ctx = overlayFinger3.getContext("2d");
+
+        let loading = true;
+        let useFront = false;
+
         let hands;
         let detector;
         // Load image hand
@@ -136,30 +158,53 @@
         image2.onload = () => {
             console.log("Image hand loaded successfully");
         };
-        let showKeyPoints = true;
-        let useFront = false;
         // Load image index-finger
         let imageIndexFinger = new Image()
         imageIndexFinger.src = "./models/finger.png";
         imageIndexFinger.onload = () => {
             console.log("Image finger 1 loaded successfully");
         };
+
+        // Add event listeners
         document.getElementById("btn").addEventListener("click", onclickButton);
 
+        // Start video streaming
         function startVideo() {
+
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                let mode = useFront ? "user" : "environment";
-                navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 360, height: 360, facingMode: mode } }).then(function (stream) {
+                let constraints = {
+                    audio: false,
+                    video: {
+                        width: 640, height: 480,
+                        facingMode: useFront ? "user" : "environment"
+                    }
+                };
+
+                navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
                     video.addEventListener("loadedmetadata", loadModel);
                     video.srcObject = stream;
                     video.play();
                     drawCameraIntoCanvas();
+                }).catch(err => {
+                    console.error("Error accessing media devices.", err);
                 });
-            } else {
-                feedback("onError", "Failed to capture video");
             }
         }
 
+        // Draw camera stream to canvas
+        function drawCameraIntoCanvas() {
+            ctx.clearRect(0, 0, 420, 420);
+            if (useFront) {
+                ctx.save();
+                ctx.scale(-1, 1);
+                ctx.translate(-420, 0);
+            }
+            ctx.drawImage(video, 0, 0, 420, 420);
+            if (useFront) ctx.restore();
+            setTimeout(drawCameraIntoCanvas, 30);  // Limit to ~33fps
+        }
+
+        // Load hand pose model
         async function loadModel() {
             const model = handPoseDetection.SupportedModels.MediaPipeHands;
             const detectorConfig = {
@@ -169,54 +214,66 @@
             };
             detector = await handPoseDetection.createDetector(model, detectorConfig);
 
-            estimateHands();
         }
 
+        // Estimate hands
         async function estimateHands() {
-            const estimationConfig = { flipHorizontal: useFront };
-            const rawHands = await detector.estimateHands(video, estimationConfig);
-
-            hands = getKeypoints(rawHands);
-            if (showKeyPoints) {
-                // drawKeypoints();
-                renderImageOnPalm();
-                renderImageOnIndex();
-                renderImageOnMiddle();
-                renderImageOnRing()
+            try {
+                const estimationConfig = { flipHorizontal: useFront };
+                const rawHands = await detector.estimateHands(video, estimationConfig);
+                hands = getKeypoints(rawHands);
+                drawHandOverlay();
+            } catch (error) {
+                console.error("Error estimating hands:", error);
             }
-
-            window.requestAnimationFrame(estimateHands);
+            window.requestAnimationFrame(estimateHands);  // Call next frame
         }
 
-        function drawCameraIntoCanvas() {
-            if (useFront) {
-                ctx.clearRect(0, 0, 360, 360);
-                ctx.save();
-                ctx.scale(-1, 1);
-                ctx.translate(-360, 0);
-                ctx.drawImage(video, 0, 0, 360, 360);
-                ctx.restore();
-            } else {
-                ctx.drawImage(video, 0, 0, 360, 360);
-            }
-            window.requestAnimationFrame(drawCameraIntoCanvas);
-        }
+        // Draw hand overlay on canvas
+        function drawHandOverlay() {
+            overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
-        /* function drawKeypoints() {
-            for (let i = 0; i < hands.length; i += 1) {
-                for (let j = 0; j < hands[i].keypoints.length; j += 1) {
-                    if (j === 8 || j === 12 || j === 16) {
-                        let keypoint = hands[i].keypoints[j];
-                        ctx.fillStyle = "#000";
-                        ctx.beginPath();
-                        ctx.arc(keypoint[0], keypoint[1], 12, 0, 2 * Math.PI);
-                        ctx.fill();
+            overlayFinger1Ctx.clearRect(0, 0, overlayFinger1.width, overlayFinger1.height);
+            overlayFinger2Ctx.clearRect(0, 0, overlayFinger2.width, overlayFinger2.height);
+            overlayFinger3Ctx.clearRect(0, 0, overlayFinger3.width, overlayFinger3.height);
+
+            if (hands.length > 0) {
+                let hand = hands[0];
+                console.log("Hand", hand)
+                let indexStartFinger = hand.keypoints[8];
+                let middleStartFinger = hand.keypoints[12]
+                let ringStartFinger = hand.keypoints[16]
+                let palmStartCenter = hand.keypoints[13];
+
+                if (palmStartCenter.length) {
+                    let imgWidth = 100;
+                    let imgHeight = 100;
+
+                    let fingerWidth = 45
+                    let fingerHeight = 45
+                    if (hand.handedness === "Left") {
+                        // right hand
+                        overlayCtx.drawImage(image, palmStartCenter[0] / 600, palmStartCenter[1] / 600, imgWidth, imgHeight);
+
+                        overlayCtx.drawImage(imageIndexFinger, indexStartFinger[0] / 520, indexStartFinger[1] / 570, fingerWidth, fingerHeight);
+                        overlayCtx.drawImage(imageIndexFinger, middleStartFinger[0] / 520, middleStartFinger[1] / 570, fingerWidth, fingerHeight);
+                        overlayCtx.drawImage(imageIndexFinger, ringStartFinger[0] / 520, ringStartFinger[1] / 570, fingerWidth, fingerHeight);
+
+                    } else {
+                        overlayCtx.drawImage(image2, palmStartCenter[0] / 600, palmStartCenter[1] / 800, imgWidth, imgHeight);
+
+                        overlayCtx.drawImage(imageIndexFinger, indexStartFinger[0] / 540, indexStartFinger[1] / 570, fingerWidth, fingerHeight);
+                        overlayCtx.drawImage(imageIndexFinger, middleStartFinger[0] / 550, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
+                        overlayCtx.drawImage(imageIndexFinger, ringStartFinger[0] / 540, ringStartFinger[1] / 540, fingerWidth, fingerHeight);
+
+
                     }
 
                 }
             }
-        } */
+        }
 
+        // Extract keypoints from hand data
         function getKeypoints(hands) {
             let keypoints = [];
             for (let i = 0; i < hands.length; i += 1) {
@@ -224,7 +281,7 @@
                 let points = [];
                 for (let j = 0; j < hands[i].keypoints.length; j += 1) {
                     let keypoint = hands[i].keypoints[j];
-                    points.push([keypoint.x, keypoint.y]);
+                    points.push([keypoint.x * canvas.width, keypoint.y * canvas.height]);
                 }
                 hand.handedness = hands[i].handedness;
                 hand.keypoints = points;
@@ -233,86 +290,7 @@
             return keypoints;
         }
 
-        function feedback(eventName, message) {
-            let log = {};
-            log.event = eventName;
-            if (message) { log.data = message; }
-
-            if (window.AppInventor) {
-                window.AppInventor.setWebViewString(JSON.stringify(log));
-            } else {
-                console.log(JSON.stringify(log));
-            }
-        }
-
-        function toggleCamera() {
-            useFront = !useFront;
-            startVideo();
-        }
-
-        function toggleKeyPoints() {
-            showKeyPoints = !showKeyPoints;
-        }
-
-        // Render an image at the center of the palm
-        function renderImageOnPalm() {
-            for (let i = 0; i < hands.length; i += 1) {
-                let keypoints = hands[i].keypoints;
-                // Calculate the center of the palm using keypoints 0 and 9
-                let centerX = (keypoints[0][0] + keypoints[9][0]) / 2;
-                let centerY = (keypoints[0][1] + keypoints[9][1]) / 2.3;
-
-
-                // Adjust size and position of the image
-                let imageWidth = 100;
-                let imageHeight = 100;
-                if (hands[i].handedness === "Left") {
-                    ctx.drawImage(image, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
-                } else {
-                    ctx.drawImage(image2, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
-
-                }
-            }
-        }
-        function renderImageOnIndex() {
-            for (let i = 0; i < hands.length; i += 1) {
-                let keypoints = hands[i].keypoints;
-                // Calculate the center of the palm using keypoints 0 and 9
-                let centerX = keypoints[8][0]
-                let centerY = keypoints[8][1]
-
-                // Adjust size and position of the image
-                let imageWidth = 23;
-                let imageHeight = 20;
-                ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
-            }
-        }
-        function renderImageOnMiddle() {
-            for (let i = 0; i < hands.length; i += 1) {
-                let keypoints = hands[i].keypoints;
-                // Calculate the center of the palm using keypoints 0 and 9
-                let centerX = keypoints[12][0]
-                let centerY = keypoints[12][1]
-
-                // Adjust size and position of the image
-                let imageWidth = 23;
-                let imageHeight = 20;
-                ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
-            }
-        }
-        function renderImageOnRing() {
-            for (let i = 0; i < hands.length; i += 1) {
-                let keypoints = hands[i].keypoints;
-                // Calculate the center of the palm using keypoints 0 and 9
-                let centerX = keypoints[16][0];
-                let centerY = keypoints[16][1]
-
-                // Adjust size and position of the image
-                let imageWidth = 23;
-                let imageHeight = 20;
-                ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
-            }
-        }
+        // Button click handler
         function onclickButton(e) {
             e.preventDefault();  // Prevent any default behavior
             e.stopPropagation();  // Prevent any default behavior
@@ -323,12 +301,13 @@
 
         }
 
+        // Start video when the page loads
         startVideo();
     </script>
+    <footer>
+        <h4>copy right 2024</h4>
+        <h5>v: 0.0.33</h5>
+    </footer>
 </body>
-<footer>
-    <h4>copy right 2024</h4>
-    <h5>v: 1.2.1</h5>
-</footer>
 
 </html>
