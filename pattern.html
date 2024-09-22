@@ -228,15 +228,15 @@
                 let palmStartCenter = hand.keypoints[9];
 
                 if (palmStartCenter.length) {
-                    let imgWidth = 150;
-                    let imgHeight = 150;
+                    let imgWidth = 200;
+                    let imgHeight = 200;
 
                     let fingerWidth = 35
                     let fingerHeight = 50
                     overlayCtx.drawImage(image, palmStartCenter[0] / 2000, palmStartCenter[1] / 700, imgWidth, imgHeight);
-                    overlayCtx.drawImage(imageFinger, indexStartFinger[0] / 750, indexStartFinger[1] / 540, fingerWidth, fingerHeight);
-                    overlayCtx.drawImage(imageFinger, middleStartFinger[0] / 800, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
-                    overlayCtx.drawImage(imageFinger, ringStartFinger[0] / 800, ringStartFinger[1] / 540, fingerWidth, fingerHeight);
+                    overlayCtx.drawImage(imageFinger, indexStartFinger[0] / 750, indexStartFinger[1] / 740, fingerWidth, fingerHeight);
+                    overlayCtx.drawImage(imageFinger, middleStartFinger[0] / 800, middleStartFinger[1] / 740, fingerWidth, fingerHeight);
+                    overlayCtx.drawImage(imageFinger, ringStartFinger[0] / 800, ringStartFinger[1] / 740, fingerWidth, fingerHeight);
 /*                     drawCircle(indexStartFinger[0] / 800, indexStartFinger[0] / 540, 50, 'red');
  */
 
