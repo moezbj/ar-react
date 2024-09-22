@@ -132,7 +132,7 @@
             console.log("Image hand loaded successfully");
         };
         let showKeyPoints = true;
-        let useFront = true;
+        let useFront = false;
         // Load image index-finger
         let imageIndexFinger = new Image()
         imageIndexFinger.src = "./models/finger.png";
@@ -176,8 +176,11 @@
             feedback("onHands", hands);
 
             if (showKeyPoints) {
-                drawKeypoints();
+                // drawKeypoints();
                 renderImageOnPalm();
+                renderImageOnIndex();
+                renderImageOnMiddle();
+                renderImageOnRing()
             }
 
             window.requestAnimationFrame(estimateHands);
@@ -258,9 +261,14 @@
                 let centerY = (keypoints[0][1] + keypoints[9][1]) / 2;
 
                 // Adjust size and position of the image
-                let imageWidth = 50;
-                let imageHeight = 50;
-                ctx.drawImage(image, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
+                let imageWidth = 100;
+                let imageHeight = 100;
+                if (hands[i].handedness === "Left") {
+                    ctx.drawImage(image, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
+                } else {
+                    ctx.drawImage(image2, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
+
+                }
             }
         }
         function renderImageOnIndex() {
@@ -272,7 +280,7 @@
 
                 // Adjust size and position of the image
                 let imageWidth = 23;
-                let imageHeight = 23;
+                let imageHeight = 30;
                 ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
             }
         }
@@ -285,7 +293,7 @@
 
                 // Adjust size and position of the image
                 let imageWidth = 23;
-                let imageHeight = 23;
+                let imageHeight = 30;
                 ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
             }
         }
@@ -298,7 +306,7 @@
 
                 // Adjust size and position of the image
                 let imageWidth = 23;
-                let imageHeight = 23;
+                let imageHeight = 30;
                 ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
             }
         }
