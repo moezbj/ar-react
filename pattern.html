@@ -249,24 +249,24 @@
                     let imgWidth = 200;
                     let imgHeight = 200;
 
-                    let fingerWidth = 40
-                    let fingerHeight = 40
+                    let fingerWidth = 45
+                    let fingerHeight = 45
                     if (hand.handedness === "Left") {
                         overlayCtx.drawImage(image, palmStartCenter[0] / 1300, palmStartCenter[1] / 800, imgWidth, imgHeight);
                         overlayCtx.drawImage(imageIndexFinger, indexStartFinger[0] / 520, indexStartFinger[1] / 570, fingerWidth, fingerHeight);
-                    overlayCtx.drawImage(imageIndexFinger, middleStartFinger[0] / 520, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
-                    overlayCtx.drawImage(imageIndexFinger, ringStartFinger[0] / 520, ringStartFinger[1] / 540, fingerWidth, fingerHeight);
+                        overlayCtx.drawImage(imageIndexFinger, middleStartFinger[0] / 520, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
+                        overlayCtx.drawImage(imageIndexFinger, ringStartFinger[0] / 520, ringStartFinger[1] / 640, fingerWidth, fingerHeight);
 
 
                     } else {
                         overlayCtx.drawImage(image2, palmStartCenter[0] / 1300, palmStartCenter[1] / 800, imgWidth, imgHeight);
                         overlayCtx.drawImage(imageIndexFinger, indexStartFinger[0] / 520, indexStartFinger[1] / 570, fingerWidth, fingerHeight);
-                    overlayCtx.drawImage(imageIndexFinger, middleStartFinger[0] / 520, middleStartFinger[1] / 470, fingerWidth, fingerHeight);
-                    overlayCtx.drawImage(imageIndexFinger, ringStartFinger[0] / 520, ringStartFinger[1] / 470, fingerWidth, fingerHeight);
+                        overlayCtx.drawImage(imageIndexFinger, middleStartFinger[0] / 520, middleStartFinger[1] / 470, fingerWidth, fingerHeight);
+                        overlayCtx.drawImage(imageIndexFinger, ringStartFinger[0] / 520, ringStartFinger[1] / 470, fingerWidth, fingerHeight);
 
 
                     }
-                  
+
                 }
             }
         }
@@ -304,7 +304,7 @@
     </script>
     <footer>
         <h4>copy right 2024</h4>
-        <h5>v: 0.0.12</h5>
+        <h5>v: 0.0.13</h5>
     </footer>
 </body>
 
