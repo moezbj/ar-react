@@ -118,6 +118,11 @@
         image.onload = () => {
             console.log("Image hand loaded successfully");
         };
+        let image2 = new Image();
+        image2.src = "./models/henna-left.png";
+        image2.onload = () => {
+            console.log("Image hand loaded successfully");
+        };
         // Load image index-finger
         let imageFinger = new Image()
         imageFinger.src = "./models/finger.png";
@@ -234,13 +239,19 @@
 
                     let fingerWidth = 35
                     let fingerHeight = 50
-                    overlayCtx.drawImage(image, palmStartCenter[0] / 1000, palmStartCenter[1] / 1000, imgWidth, imgHeight);
-                    /*   overlayCtx.drawImage(imageFinger, indexStartFinger[0] / 900, indexStartFinger[1] / 540, fingerWidth, fingerHeight);
-                      overlayCtx.drawImage(imageFinger, middleStartFinger[0] / 900, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
-                      overlayCtx.drawImage(imageFinger, ringStartFinger[0] / 900, ringStartFinger[1] / 540, fingerWidth, fingerHeight); */
-                    overlayCtx.drawImage(imageFinger, indexStartFinger[0] / 900, indexStartFinger[1] / 540, fingerWidth, fingerHeight);
-                    overlayCtx.drawImage(imageFinger, middleStartFinger[0] / 900, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
-                    overlayCtx.drawImage(imageFinger, ringStartFinger[0] / 900, ringStartFinger[1] / 540, fingerWidth, fingerHeight);
+                    if (hand.handedness === "Left") {
+                        overlayCtx.drawImage(image, palmStartCenter[0] / -500, palmStartCenter[1] / 1000, imgWidth, imgHeight);
+                        overlayCtx.drawImage(imageFinger, indexStartFinger[0] / 550, indexStartFinger[1] / 540, fingerWidth, fingerHeight);
+                        overlayCtx.drawImage(imageFinger, middleStartFinger[0] / 550, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
+                        overlayCtx.drawImage(imageFinger, ringStartFinger[0] / 550, ringStartFinger[1] / 540, fingerWidth, fingerHeight);
+                    } else {
+                        overlayCtx.drawImage(image2, palmStartCenter[0] / 1000, palmStartCenter[1] / 1000, imgWidth, imgHeight);
+                        overlayCtx.drawImage(imageFinger, indexStartFinger[0] / 900, indexStartFinger[1] / 540, fingerWidth, fingerHeight);
+                        overlayCtx.drawImage(imageFinger, middleStartFinger[0] / 900, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
+                        overlayCtx.drawImage(imageFinger, ringStartFinger[0] / 900, ringStartFinger[1] / 540, fingerWidth, fingerHeight);
+                    }
+
+
                     /*                     drawCircle(indexStartFinger[0] / 800, indexStartFinger[0] / 540, 50, 'red');
                      */
 
