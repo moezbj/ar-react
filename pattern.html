@@ -243,14 +243,14 @@
                 let indexStartFinger = hand.keypoints[8];
                 let middleStartFinger = hand.keypoints[12]
                 let ringStartFinger = hand.keypoints[16]
-                let palmStartCenter = hand.keypoints[9];
+                let palmStartCenter = hand.keypoints[13];
 
                 if (palmStartCenter.length) {
-                    let imgWidth = 200;
-                    let imgHeight = 200;
+                    let imgWidth = 140;
+                    let imgHeight = 140;
 
-                    let fingerWidth = 45
-                    let fingerHeight = 45
+                    let fingerWidth = 40
+                    let fingerHeight = 30
                     if (hand.handedness === "Left") {
                         // right hand
                         overlayCtx.drawImage(image, palmStartCenter[0] / 1100, palmStartCenter[1] / 800, imgWidth, imgHeight);
