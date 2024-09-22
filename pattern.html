@@ -244,7 +244,8 @@
                         overlayCtx.drawImage(imageFinger, indexStartFinger[0] / 550, indexStartFinger[1] / 540, fingerWidth, fingerHeight);
                         overlayCtx.drawImage(imageFinger, middleStartFinger[0] / 550, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
                         overlayCtx.drawImage(imageFinger, ringStartFinger[0] / 550, ringStartFinger[1] / 540, fingerWidth, fingerHeight);
-                    } else {
+                    }
+                    if ((hand.handedness === "Right")) {
                         overlayCtx.drawImage(image2, palmStartCenter[0] / 1000, palmStartCenter[1] / 1000, imgWidth, imgHeight);
                         overlayCtx.drawImage(imageFinger, indexStartFinger[0] / 900, indexStartFinger[1] / 540, fingerWidth, fingerHeight);
                         overlayCtx.drawImage(imageFinger, middleStartFinger[0] / 900, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
