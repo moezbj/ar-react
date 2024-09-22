@@ -106,13 +106,13 @@
 </head>
 
 <body>
-    <header id="overlayBack" width=420 height=420>
+    <header id="overlayBack" width=360 height=360>
         <button id="back">back</button>
         <h1 id="title">Ar Simulation </h1>
     </header>
-    <canvas id="canvas" width=420 height=420></canvas>
-    <video id="video" width=420 height=420 autoplay playsinline style="display:none"></video>
-    <div id="overlayLoading" width=420 height=420>
+    <canvas id="canvas" width=360 height=360></canvas>
+    <video id="video" width=360 height=360 autoplay playsinline style="display:none"></video>
+    <div id="overlayLoading" width=360 height=360>
         <img src="./models/hand.png" width="180" height="180" />
         <p id="text">Place your hand here</p>
         <button id="btn">Start</button>
@@ -176,8 +176,6 @@
             };
             detector = await handPoseDetection.createDetector(model, detectorConfig);
             feedback("onModelReady");
-
-            //  estimateHands();
         }
 
         async function estimateHands() {
@@ -185,7 +183,11 @@
                 const estimationConfig = { flipHorizontal: useFront };
                 const rawHands = await detector.estimateHands(video, estimationConfig);
                 hands = getKeypoints(rawHands);
-                drawHandOverlay();
+                //drawHandOverlay();
+                renderImageOnPalm();
+                renderImageOnIndex();
+                renderImageOnMiddle();
+                renderImageOnRing()
             } catch (error) {
                 console.error("Error estimating hands:", error);
             }
@@ -193,13 +195,13 @@
         }
 
         function drawCameraIntoCanvas() {
-            ctx.clearRect(0, 0, 420, 420);
+            ctx.clearRect(0, 0, 360, 360);
             if (useFront) {
                 ctx.save();
                 ctx.scale(-1, 1);
-                ctx.translate(-420, 0);
+                ctx.translate(-360, 0);
             }
-            ctx.drawImage(video, 0, 0, 420, 420);
+            ctx.drawImage(video, 0, 0, 360, 360);
             if (useFront) ctx.restore();
             setTimeout(drawCameraIntoCanvas, 30);  // Limit to ~33fps
         }
