@@ -240,7 +240,7 @@
                     let fingerWidth = 35
                     let fingerHeight = 50
                     if (hand.handedness === "Left") {
-                        overlayCtx.drawImage(image, palmStartCenter[0] / -500, palmStartCenter[1] / 1000, imgWidth, imgHeight);
+                        overlayCtx.drawImage(image, palmStartCenter[0] / 1000, palmStartCenter[1] / 1000, imgWidth, imgHeight);
                         overlayCtx.drawImage(imageFinger, indexStartFinger[0] / 550, indexStartFinger[1] / 540, fingerWidth, fingerHeight);
                         overlayCtx.drawImage(imageFinger, middleStartFinger[0] / 550, middleStartFinger[1] / 540, fingerWidth, fingerHeight);
                         overlayCtx.drawImage(imageFinger, ringStartFinger[0] / 550, ringStartFinger[1] / 540, fingerWidth, fingerHeight);
