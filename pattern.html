@@ -211,16 +211,16 @@
                 let palmStartCenter = hand.keypoints[9];
 
                 if (palmStartCenter.length) {
-                    let imgWidth = 150;
-                    let imgHeight = 150;
+                    let imgWidth = 200;
+                    let imgHeight = 200;
 
-                    let fingerWidth = 45
-                    let fingerHeight = 45
+                    let fingerWidth = 40
+                    let fingerHeight = 40
                     if (hand.handedness === "Left") {
-                        overlayCtx.drawImage(image, palmStartCenter[0] / 2000, palmStartCenter[1] / 700, imgWidth, imgHeight);
+                        overlayCtx.drawImage(image, palmStartCenter[0] / 1300, palmStartCenter[1] / 600, imgWidth, imgHeight);
 
                     } else {
-                        overlayCtx.drawImage(image2, palmStartCenter[0] / 2000, palmStartCenter[1] / 700, imgWidth, imgHeight);
+                        overlayCtx.drawImage(image2, palmStartCenter[0] / 1300, palmStartCenter[1] / 600, imgWidth, imgHeight);
 
                     }
                     overlayCtx.drawImage(imageIndexFinger, indexStartFinger[0] / 400, indexStartFinger[1] / 400, fingerWidth, fingerHeight);
