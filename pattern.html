@@ -203,7 +203,6 @@
             }
 
             for (let i = 0; i < hands.length; i += 1) {
-
                 for (let j = 0; j < hands[i].keypoints.length; j += 1) {
                     if (j === 8 || j === 12 || j === 16) {
                         let keypoint = hands[i].keypoints[j];
@@ -266,23 +265,17 @@
             overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
             if (hands.length > 0) {
                 let hand = hands[0];
-                console.log('hand', hand)
-                let indexStartFinger = hand.keypoints[8];
-                let middleStartFinger = hand.keypoints[12]
-                let ringStartFinger = hand.keypoints[16]
-                let thumbStartFinger = hand.keypoints[20]
-
                 let palmStartCenter = hand.keypoints[9];
 
                 if (palmStartCenter.length) {
                     let imgWidth = 200;
                     let imgHeight = 200;
                     if (hand.handedness === "Left") {
-                        overlayCtx.drawImage(image, palmStartCenter[0] / 1000, palmStartCenter[1] / 1000, imgWidth, imgHeight);
+                        overlayCtx.drawImage(image, palmStartCenter[0] / 500, palmStartCenter[1] / 1000, imgWidth, imgHeight);
                     }
                     else {
                         // left hand
-                        overlayCtx.drawImage(image2, palmStartCenter[0] / 1000, palmStartCenter[1] / 1000, imgWidth, imgHeight);
+                        overlayCtx.drawImage(image2, palmStartCenter[0] / 500, palmStartCenter[1] / 1000, imgWidth, imgHeight);
                     }
                 }
             }
