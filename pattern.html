@@ -113,6 +113,11 @@
     </header>
     <canvas id="canvas" width=360 height=360></canvas>
     <video id="video" width=360 height=360 autoplay style="display:none"></video>
+    <div id="overlayLoading" width=420 height=420>
+        <img src="./models/hand.png" width="180" height="180" />
+        <p id="text">Place your hand here</p>
+        <button id="btn">Start</button>
+    </div>
 
     <script>
         let video = document.getElementById("video");
@@ -139,6 +144,8 @@
         imageIndexFinger.onload = () => {
             console.log("Image finger 1 loaded successfully");
         };
+        document.getElementById("btn").addEventListener("click", onclickButton);
+
         function startVideo() {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 let mode = useFront ? "user" : "environment";
@@ -165,7 +172,7 @@
             detector = await handPoseDetection.createDetector(model, detectorConfig);
             feedback("onModelReady");
 
-            estimateHands();
+            //  estimateHands();
         }
 
         async function estimateHands() {
@@ -257,8 +264,9 @@
             for (let i = 0; i < hands.length; i += 1) {
                 let keypoints = hands[i].keypoints;
                 // Calculate the center of the palm using keypoints 0 and 9
-                let centerX = keypoints[9][0]
-                let centerY = keypoints[9][1] 
+                let centerX = (keypoints[0][0] + keypoints[9][0]) / 2;
+                let centerY = (keypoints[0][1] + keypoints[9][1]) / 2;
+
 
                 // Adjust size and position of the image
                 let imageWidth = 100;
@@ -310,7 +318,15 @@
                 ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
             }
         }
+        function onclickButton(e) {
+            e.preventDefault();  // Prevent any default behavior
+            e.stopPropagation();  // Prevent any default behavior
+            console.log("Button clicked");
+            loading = false;
+            overlayLoading.style.display = "none";  // Hide the overlayCanvasHand
+            estimateHands();
 
+        }
 
         startVideo();
     </script>
