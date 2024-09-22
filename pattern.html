@@ -257,8 +257,8 @@
             for (let i = 0; i < hands.length; i += 1) {
                 let keypoints = hands[i].keypoints;
                 // Calculate the center of the palm using keypoints 0 and 9
-                let centerX = (keypoints[0][0] + keypoints[9][0]) / 2;
-                let centerY = (keypoints[0][1] + keypoints[9][1]) / 2;
+                let centerX = keypoints[9][0]
+                let centerY = keypoints[9][1] 
 
                 // Adjust size and position of the image
                 let imageWidth = 100;
@@ -317,7 +317,7 @@
 </body>
 <footer>
     <h4>copy right 2024</h4>
-    <h5>v: 1.2.0</h5>
+    <h5>v: 1.2.1</h5>
 </footer>
 
 </html>
