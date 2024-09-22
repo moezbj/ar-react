@@ -178,7 +178,7 @@
 
             hands = getKeypoints(rawHands);
             if (showKeyPoints) {
-                drawKeypoints();
+                // drawKeypoints();
                 renderImageOnPalm();
                 renderImageOnIndex();
                 renderImageOnMiddle();
@@ -202,7 +202,7 @@
             window.requestAnimationFrame(drawCameraIntoCanvas);
         }
 
-        function drawKeypoints() {
+        /* function drawKeypoints() {
             for (let i = 0; i < hands.length; i += 1) {
                 for (let j = 0; j < hands[i].keypoints.length; j += 1) {
                     if (j === 8 || j === 12 || j === 16) {
@@ -215,7 +215,7 @@
 
                 }
             }
-        }
+        } */
 
         function getKeypoints(hands) {
             let keypoints = [];
