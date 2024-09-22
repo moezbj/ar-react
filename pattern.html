@@ -301,12 +301,12 @@
             for (let i = 0; i < hands.length; i += 1) {
                 let keypoints = hands[i].keypoints;
                 // Calculate the center of the palm using keypoints 0 and 9
-                let centerX = (keypoints[16][0] + keypoints[15][0]) / 2;
-                let centerY = (keypoints[16][1] + keypoints[15][1]) / 2;
+                let centerX = keypoints[16][0];
+                let centerY = keypoints[16][1]
 
                 // Adjust size and position of the image
                 let imageWidth = 23;
-                let imageHeight =20;
+                let imageHeight = 20;
                 ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
             }
         }
@@ -317,7 +317,7 @@
 </body>
 <footer>
     <h4>copy right 2024</h4>
-    <h5>v: 1.1.2</h5>
+    <h5>v: 1.1.3</h5>
 </footer>
 
 </html>
