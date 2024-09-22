@@ -3,120 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Handpose with tfjs</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0, user-scalable=no">
 
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection"></script>
-    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 
     <style>
         * {
             margin: 0;
-            padding: 0;
-        }
-
-        body {
-            width: 100vw;
-            height: 100vh;
-        }
-
-        #canvas {
-            width: 100% !important;
-            height: 100% !important;
-        }
-
-        #overlayCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
-        #overlayLoading {
-            position: absolute;
-            top: 60px;
-            left: 0;
-            background-color: rgba(100, 91, 91, 0.3);
-            z-index: 5;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #overlayBack {
-            display: flex;
-            align-items: center;
-            height: 60px;
-        }
-
-        #btn {
-            border-radius: 5px;
-            background-color: black;
-            color: white;
-            border: none;
-            z-index: 999;
-            padding: 10px 15px 10px 15px;
-            margin-top: 25px;
-            cursor: pointer;
-        }
-
-        #back {
-            border-radius: 5px;
-            background-color: black;
-            color: white;
-            border: none;
-            z-index: 999;
-            padding: 10px 15px 10px 15px;
-            margin-left: 25px;
-            cursor: pointer;
-        }
-
-        #btn:hover,
-        #back:hover {
-            background-color: white;
-            color: black;
-        }
-
-        #text {
-            color: rgba(255, 255, 255, 1);
-            margin-top: 10px;
-            margin-bottom: 10px;
-            font-size: larger;
-            font-weight: 700;
-        }
-
-        #title {
-            font-weight: 700;
-            margin-left: 30px;
-        }
-
-        footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 0px 20px 20px 20px;
+            padding: 0
         }
     </style>
 
 </head>
 
 <body>
-    <header id="overlayBack" width=360 height=360>
-        <button id="back">back</button>
-        <h1 id="title">Ar Simulation </h1>
-    </header>
     <canvas id="canvas" width=360 height=360></canvas>
-    <video id="video" width=360 height=360 autoplay playsinline style="display:none"></video>
-    <div id="overlayLoading" width=360 height=360>
-        <img src="./models/hand.png" width="180" height="180" />
-        <p id="text">Place your hand here</p>
-        <button id="btn">Start</button>
-    </div>
+    <video id="video" width=360 height=360 autoplay style="display:none"></video>
 
     <script>
         let video = document.getElementById("video");
@@ -124,46 +28,25 @@
         let ctx = canvas.getContext("2d");
         let hands;
         let detector;
-        // Load image hand
         let image = new Image();
-        image.src = "./models/henna.png";
-        image.onload = () => {
-            console.log("Image hand loaded successfully");
-        };
-        let image2 = new Image();
-        image2.src = "./models/henna-left.png";
-        image2.onload = () => {
-            console.log("Image hand loaded successfully");
-        };
+        image.src = './models/henna.png'; // Add your image URL here
+
         let showKeyPoints = true;
-        let useFront = false;
-        // Load image index-finger
-        let imageIndexFinger = new Image()
-        imageIndexFinger.src = "./models/finger.png";
-        imageIndexFinger.onload = () => {
-            console.log("Image finger 1 loaded successfully");
-        };
-        document.getElementById("btn").addEventListener("click", onclickButton);
+        let useFront = true;
 
         function startVideo() {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 let mode = useFront ? "user" : "environment";
-                let constraints = {
-                    audio: false,
-                    video: {
-                        width: 640, height: 480,
-                        facingMode: useFront ? "user" : "environment"
-                    }
-                };
-                navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+                navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 360, height: 360, facingMode: mode } }).then(function (stream) {
                     video.addEventListener("loadedmetadata", loadModel);
                     video.srcObject = stream;
                     video.play();
+
                     drawCameraIntoCanvas();
                     feedback("onVideoReady");
-                }).catch(err => {
-                    console.error("Error accessing media devices.", err);
-                });;
+                });
+            } else {
+                feedback("onError", "Failed to capture video");
             }
         }
 
@@ -176,34 +59,37 @@
             };
             detector = await handPoseDetection.createDetector(model, detectorConfig);
             feedback("onModelReady");
+
+            estimateHands();
         }
 
         async function estimateHands() {
-            try {
-                const estimationConfig = { flipHorizontal: useFront };
-                const rawHands = await detector.estimateHands(video, estimationConfig);
-                hands = getKeypoints(rawHands);
-                //drawHandOverlay();
+            const estimationConfig = { flipHorizontal: useFront };
+            const rawHands = await detector.estimateHands(video, estimationConfig);
+
+            hands = getKeypoints(rawHands);
+            feedback("onHands", hands);
+
+            if (showKeyPoints) {
+                drawKeypoints();
                 renderImageOnPalm();
-                renderImageOnIndex();
-                renderImageOnMiddle();
-                renderImageOnRing()
-            } catch (error) {
-                console.error("Error estimating hands:", error);
             }
-            window.requestAnimationFrame(estimateHands);  // Call next frame
+
+            window.requestAnimationFrame(estimateHands);
         }
 
         function drawCameraIntoCanvas() {
-            ctx.clearRect(0, 0, 360, 360);
             if (useFront) {
+                ctx.clearRect(0, 0, 360, 360);
                 ctx.save();
                 ctx.scale(-1, 1);
                 ctx.translate(-360, 0);
+                ctx.drawImage(video, 0, 0, 360, 360);
+                ctx.restore();
+            } else {
+                ctx.drawImage(video, 0, 0, 360, 360);
             }
-            ctx.drawImage(video, 0, 0, 360, 360);
-            if (useFront) ctx.restore();
-            setTimeout(drawCameraIntoCanvas, 30);  // Limit to ~33fps
+            window.requestAnimationFrame(drawCameraIntoCanvas);
         }
 
         function drawKeypoints() {
@@ -213,7 +99,7 @@
                         let keypoint = hands[i].keypoints[j];
                         ctx.fillStyle = "#000";
                         ctx.beginPath();
-                        ctx.arc(keypoint[0], keypoint[1], 12, 0, 2 * Math.PI);
+                        ctx.arc(keypoint[0], keypoint[1], 10, 0, 2 * Math.PI);
                         ctx.fill();
                     }
 
@@ -264,75 +150,17 @@
                 let keypoints = hands[i].keypoints;
                 // Calculate the center of the palm using keypoints 0 and 9
                 let centerX = (keypoints[0][0] + keypoints[9][0]) / 2;
-                let centerY = (keypoints[0][1] + keypoints[9][1]) / 2.3;
-
+                let centerY = (keypoints[0][1] + keypoints[9][1]) / 2;
 
                 // Adjust size and position of the image
                 let imageWidth = 100;
                 let imageHeight = 100;
-                if (hands[i].handedness === "Left") {
-                    ctx.drawImage(image, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
-                } else {
-                    ctx.drawImage(image2, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
-
-                }
+                ctx.drawImage(image, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
             }
-        }
-        function renderImageOnIndex() {
-            for (let i = 0; i < hands.length; i += 1) {
-                let keypoints = hands[i].keypoints;
-                // Calculate the center of the palm using keypoints 0 and 9
-                let centerX = keypoints[8][0]
-                let centerY = keypoints[8][1]
-
-                // Adjust size and position of the image
-                let imageWidth = 23;
-                let imageHeight = 20;
-                ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
-            }
-        }
-        function renderImageOnMiddle() {
-            for (let i = 0; i < hands.length; i += 1) {
-                let keypoints = hands[i].keypoints;
-                // Calculate the center of the palm using keypoints 0 and 9
-                let centerX = keypoints[12][0]
-                let centerY = keypoints[12][1]
-
-                // Adjust size and position of the image
-                let imageWidth = 23;
-                let imageHeight = 20;
-                ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
-            }
-        }
-        function renderImageOnRing() {
-            for (let i = 0; i < hands.length; i += 1) {
-                let keypoints = hands[i].keypoints;
-                // Calculate the center of the palm using keypoints 0 and 9
-                let centerX = keypoints[16][0];
-                let centerY = keypoints[16][1]
-
-                // Adjust size and position of the image
-                let imageWidth = 23;
-                let imageHeight = 20;
-                ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
-            }
-        }
-        function onclickButton(e) {
-            e.preventDefault();  // Prevent any default behavior
-            e.stopPropagation();  // Prevent any default behavior
-            console.log("Button clicked");
-            loading = false;
-            overlayLoading.style.display = "none";  // Hide the overlayCanvasHand
-            estimateHands();
-
         }
 
         startVideo();
     </script>
 </body>
-<footer>
-    <h4>copy right 2024</h4>
-    <h5>v: 1.2.2</h5>
-</footer>
 
 </html>
