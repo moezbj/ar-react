@@ -275,12 +275,12 @@
             for (let i = 0; i < hands.length; i += 1) {
                 let keypoints = hands[i].keypoints;
                 // Calculate the center of the palm using keypoints 0 and 9
-                let centerX = (keypoints[8][0] + keypoints[7][0]) / 2;
-                let centerY = (keypoints[8][1] + keypoints[7][1]) / 2;
+                let centerX = (keypoints[7][0] + keypoints[8][0]) / 2;
+                let centerY = (keypoints[7][1] + keypoints[8][1]) / 2;
 
                 // Adjust size and position of the image
                 let imageWidth = 23;
-                let imageHeight = 25;
+                let imageHeight = 20;
                 ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
             }
         }
@@ -288,12 +288,12 @@
             for (let i = 0; i < hands.length; i += 1) {
                 let keypoints = hands[i].keypoints;
                 // Calculate the center of the palm using keypoints 0 and 9
-                let centerX = (keypoints[12][0] + keypoints[11][0]) / 2;
-                let centerY = (keypoints[12][1] + keypoints[11][1]) / 2;
+                let centerX = (keypoints[11][0] + keypoints[12][0]) / 2;
+                let centerY = (keypoints[11][1] + keypoints[12][1]) / 2;
 
                 // Adjust size and position of the image
                 let imageWidth = 23;
-                let imageHeight = 25;
+                let imageHeight = 20;
                 ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
             }
         }
@@ -301,12 +301,12 @@
             for (let i = 0; i < hands.length; i += 1) {
                 let keypoints = hands[i].keypoints;
                 // Calculate the center of the palm using keypoints 0 and 9
-                let centerX = (keypoints[16][0] + keypoints[15][0]) / 2;
-                let centerY = (keypoints[16][1] + keypoints[15][1]) / 2;
+                let centerX = (keypoints[15][0] + keypoints[16][0]) / 2;
+                let centerY = (keypoints[15][1] + keypoints[16][1]) / 2;
 
                 // Adjust size and position of the image
                 let imageWidth = 23;
-                let imageHeight = 25;
+                let imageHeight =20;
                 ctx.drawImage(imageIndexFinger, centerX - imageWidth / 2, centerY - imageHeight / 2, imageWidth, imageHeight);
             }
         }
@@ -317,7 +317,7 @@
 </body>
 <footer>
     <h4>copy right 2024</h4>
-    <h5>v: 1.1.0</h5>
+    <h5>v: 1.1.1</h5>
 </footer>
 
 </html>
