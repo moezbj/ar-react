@@ -174,7 +174,7 @@
                 let constraints = {
                     audio: false,
                     video: {
-                        width: 360, height: 360,
+                        width: 640, height: 480,
                         facingMode: useFront ? "user" : "environment"
                     }
                 };
@@ -257,9 +257,9 @@
                         overlayCtx.drawImage(image2, palmStartCenter[0] / 1300, palmStartCenter[1] / 600, imgWidth, imgHeight);
 
                     }
-                    overlayCtx.drawImage(imageIndexFinger, indexStartFinger[0] / 400, indexStartFinger[1] / 420, fingerWidth, fingerHeight);
-                    overlayCtx.drawImage(imageIndexFinger, middleStartFinger[0] / 440, middleStartFinger[1] / 420, fingerWidth, fingerHeight);
-                    overlayCtx.drawImage(imageIndexFinger, ringStartFinger[0] / 440, ringStartFinger[1] / 420, fingerWidth, fingerHeight);
+                    overlayCtx.drawImage(imageIndexFinger, indexStartFinger[0] / 700, indexStartFinger[1] / 470, fingerWidth, fingerHeight);
+                    overlayCtx.drawImage(imageIndexFinger, middleStartFinger[0] / 740, middleStartFinger[1] / 470, fingerWidth, fingerHeight);
+                    overlayCtx.drawImage(imageIndexFinger, ringStartFinger[0] / 740, ringStartFinger[1] / 470, fingerWidth, fingerHeight);
 
                 }
             }
