@@ -118,6 +118,11 @@
         image.onload = () => {
             console.log("Image hand loaded successfully");
         };
+        let image2 = new Image();
+        image2.src = "./models/henna-left.png";
+        image2.onload = () => {
+            console.log("Image hand loaded successfully");
+        };
         // Load image index-finger
         let imageIndexFinger = new Image()
         imageIndexFinger.src = "./models/finger.png";
@@ -199,6 +204,7 @@
 
             if (hands.length > 0) {
                 let hand = hands[0];
+                console.log("Hand", hand)
                 let indexStartFinger = hand.keypoints[8];
                 let middleStartFinger = hand.keypoints[12]
                 let ringStartFinger = hand.keypoints[16]
@@ -208,9 +214,15 @@
                     let imgWidth = 150;
                     let imgHeight = 150;
 
-                    let fingerWidth = 35
-                    let fingerHeight = 35
-                    overlayCtx.drawImage(image, palmStartCenter[0] / 2000, palmStartCenter[1] / 1000, imgWidth, imgHeight);
+                    let fingerWidth = 45
+                    let fingerHeight = 45
+                    if (hand.handedness === "Left") {
+                        overlayCtx.drawImage(image, palmStartCenter[0] / 2000, palmStartCenter[1] / 700, imgWidth, imgHeight);
+
+                    } else {
+                        overlayCtx.drawImage(image2, palmStartCenter[0] / 2000, palmStartCenter[1] / 700, imgWidth, imgHeight);
+
+                    }
                     overlayCtx.drawImage(imageIndexFinger, indexStartFinger[0] / 400, indexStartFinger[1] / 400, fingerWidth, fingerHeight);
                     overlayCtx.drawImage(imageIndexFinger, middleStartFinger[0] / 400, middleStartFinger[1] / 400, fingerWidth, fingerHeight);
                     overlayCtx.drawImage(imageIndexFinger, ringStartFinger[0] / 400, ringStartFinger[1] / 400, fingerWidth, fingerHeight);
