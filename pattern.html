@@ -246,11 +246,11 @@
                 let palmStartCenter = hand.keypoints[13];
 
                 if (palmStartCenter.length) {
-                    let imgWidth = 140;
-                    let imgHeight = 140;
+                    let imgWidth = 100;
+                    let imgHeight = 100;
 
-                    let fingerWidth = 40
-                    let fingerHeight = 30
+                    let fingerWidth = 30
+                    let fingerHeight = 20
                     if (hand.handedness === "Left") {
                         // right hand
                         overlayCtx.drawImage(image, palmStartCenter[0] / 1100, palmStartCenter[1] / 800, imgWidth, imgHeight);
@@ -306,7 +306,7 @@
     </script>
     <footer>
         <h4>copy right 2024</h4>
-        <h5>v: 0.0.19</h5>
+        <h5>v: 0.0.20</h5>
     </footer>
 </body>
 
