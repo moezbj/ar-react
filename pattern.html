@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Handpose with tfjs</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0, user-scalable=no">
 
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
@@ -149,16 +148,22 @@
         function startVideo() {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 let mode = useFront ? "user" : "environment";
-                navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 360, height: 360, facingMode: mode } }).then(function (stream) {
+                let constraints = {
+                    audio: false,
+                    video: {
+                        width: 640, height: 480,
+                        facingMode: useFront ? "user" : "environment"
+                    }
+                };
+                navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
                     video.addEventListener("loadedmetadata", loadModel);
                     video.srcObject = stream;
                     video.play();
-
                     drawCameraIntoCanvas();
                     feedback("onVideoReady");
-                });
-            } else {
-                feedback("onError", "Failed to capture video");
+                }).catch(err => {
+                    console.error("Error accessing media devices.", err);
+                });;
             }
         }
 
@@ -176,35 +181,27 @@
         }
 
         async function estimateHands() {
-            const estimationConfig = { flipHorizontal: useFront };
-            const rawHands = await detector.estimateHands(video, estimationConfig);
-
-            hands = getKeypoints(rawHands);
-            feedback("onHands", hands);
-
-            if (showKeyPoints) {
-                // drawKeypoints();
-                renderImageOnPalm();
-                renderImageOnIndex();
-                renderImageOnMiddle();
-                renderImageOnRing()
+            try {
+                const estimationConfig = { flipHorizontal: useFront };
+                const rawHands = await detector.estimateHands(video, estimationConfig);
+                hands = getKeypoints(rawHands);
+                drawHandOverlay();
+            } catch (error) {
+                console.error("Error estimating hands:", error);
             }
-
-            window.requestAnimationFrame(estimateHands);
+            window.requestAnimationFrame(estimateHands);  // Call next frame
         }
 
         function drawCameraIntoCanvas() {
+            ctx.clearRect(0, 0, 420, 420);
             if (useFront) {
-                ctx.clearRect(0, 0, 360, 360);
                 ctx.save();
                 ctx.scale(-1, 1);
-                ctx.translate(-360, 0);
-                ctx.drawImage(video, 0, 0, 360, 360);
-                ctx.restore();
-            } else {
-                ctx.drawImage(video, 0, 0, 360, 360);
+                ctx.translate(-420, 0);
             }
-            window.requestAnimationFrame(drawCameraIntoCanvas);
+            ctx.drawImage(video, 0, 0, 420, 420);
+            if (useFront) ctx.restore();
+            setTimeout(drawCameraIntoCanvas, 30);  // Limit to ~33fps
         }
 
         function drawKeypoints() {
@@ -333,7 +330,7 @@
 </body>
 <footer>
     <h4>copy right 2024</h4>
-    <h5>v: 1.2.1</h5>
+    <h5>v: 1.2.2</h5>
 </footer>
 
 </html>
