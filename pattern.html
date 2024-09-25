@@ -142,7 +142,7 @@
         function startVideo() {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 let mode = useFront ? "user" : "environment";
-                navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 360, height: 360, facingMode: mode } }).then(function (stream) {
+                navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 1280, height: 720, facingMode: mode } }).then(function (stream) {
                     video.addEventListener("loadedmetadata", loadModel);
                     video.srcObject = stream;
                     video.play();
